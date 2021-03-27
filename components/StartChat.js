@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import { TextField, Button } from '@material-ui/core';
 import styled from 'styled-components';
 import * as EmailValidator from 'email-validator';
+import { auth } from '../firebase';
 
 const StartChatInput = ({ setStartChatInputVisible, createChat }) => {
     const ref = useRef(null);
@@ -26,6 +27,9 @@ const StartChatInput = ({ setStartChatInputVisible, createChat }) => {
     const onClick = () => {
         if (!value.trim()) return setError(true);
         if (!EmailValidator.validate(value)) return setError(true);
+        if (value.trim() === auth.currentUser.email) return setError(true);
+        createChat(value);
+        setStartChatInputVisible(false);
     };
 
     return (
