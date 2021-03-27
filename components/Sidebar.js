@@ -1,10 +1,17 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Avatar, IconButton, Button } from '@material-ui/core';
 import ChatIcon from '@material-ui/icons/Chat';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
+import StartChatInput from './StartChatInput';
 
 const Sidebar = () => {
+    const [startChatInputVisible, setStartChatInputVisible] = useState(false);
+    const [startChatInputValue, setStartChatInputValue] = useState('');
+
+    const createChat = () => {};
+
     return (
         <Container>
             <Header>
@@ -22,7 +29,17 @@ const Sidebar = () => {
                 <SearchIcon style={{ color: 'rgba(0, 0, 0, 0.54)' }} />
                 <SearchInput placeholder='Search in chats' />
             </Search>
-            <SidebarButton fullWidth>Start a new chat</SidebarButton>
+            {startChatInputVisible ? (
+                <StartChatInput
+                    value={startChatInputValue}
+                    onChange={setStartChatInputValue}
+                    setStartChatInputVisible={setStartChatInputVisible}
+                />
+            ) : (
+                <SidebarButton fullWidth onClick={() => setStartChatInputVisible(true)}>
+                    Start a new chat
+                </SidebarButton>
+            )}
         </Container>
     );
 };
@@ -75,7 +92,19 @@ const SearchInput = styled.input`
 
 const SidebarButton = styled(Button)`
     &&& {
+        height: 46px;
         border-bottom: 1px solid whitesmoke;
         border-radius: 0;
+        animation: slidein 1s;
+    }
+
+    @keyframes slidein {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
     }
 `;
