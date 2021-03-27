@@ -4,13 +4,17 @@ import { Avatar, IconButton, Button } from '@material-ui/core';
 import ChatIcon from '@material-ui/icons/Chat';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
-import StartChatInput from './StartChatInput';
+import StartChat from './StartChat';
 
 const Sidebar = () => {
     const [startChatInputVisible, setStartChatInputVisible] = useState(false);
-    const [startChatInputValue, setStartChatInputValue] = useState('');
 
-    const createChat = () => {};
+    const createChat = (value) => {
+        setStartChatInputVisible(true);
+        setInputError(false);
+
+        if (!startChatInputValue.trim()) return setInputError(true);
+    };
 
     return (
         <Container>
@@ -30,11 +34,7 @@ const Sidebar = () => {
                 <SearchInput placeholder='Search in chats' />
             </Search>
             {startChatInputVisible ? (
-                <StartChatInput
-                    value={startChatInputValue}
-                    onChange={setStartChatInputValue}
-                    setStartChatInputVisible={setStartChatInputVisible}
-                />
+                <StartChat setStartChatInputVisible={setStartChatInputVisible} createChat={createChat} />
             ) : (
                 <SidebarButton fullWidth onClick={() => setStartChatInputVisible(true)}>
                     Start a new chat
