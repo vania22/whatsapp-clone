@@ -11,7 +11,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { auth, db } from '../firebase';
 import StartChat from './StartChat';
-import Chat from './Chat';
+import ChatListItem from './ChatListItem';
 
 const Sidebar = () => {
     const [startChatInputVisible, setStartChatInputVisible] = useState(false);
@@ -77,7 +77,7 @@ const Sidebar = () => {
             <Divider />
             {/* List of chats */}
             {chatsSnapshot?.docs.map((chat) => (
-                <Chat key={chat.id} id={chat.id} users={chat.data().users} />
+                <ChatListItem key={chat.id} id={chat.id} users={chat.data().users} />
             ))}
         </Container>
     );
@@ -87,6 +87,7 @@ export default Sidebar;
 
 const Container = styled.div`
     width: 300px;
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
 `;
 
 const Header = styled.div`
