@@ -18,7 +18,7 @@ const Sidebar = () => {
     const [contextMenuVisible, setContextMenuVisible] = useState(false);
 
     const [user] = useAuthState(auth);
-    const userChatRef = db.collection('chats').where('users', 'array-contains', user.email);
+    const userChatRef = db.collection('chats').where('users', 'array-contains', user?.email);
     const [chatsSnapshot] = useCollection(userChatRef);
 
     const createChat = (value) => {
@@ -33,60 +33,73 @@ const Sidebar = () => {
         !!chatsSnapshot?.docs.find((chat) => chat.data().users.find((user) => user === recipientEmail)?.length > 0);
 
     return (
-        <Container>
-            <Header>
-                <UserAvatar src={auth.currentUser.photoURL} />
-                <IconsContainer>
-                    <IconButton>
-                        <ChatIcon />
-                    </IconButton>
-                    <IconButton onClick={() => setContextMenuVisible((prev) => !prev)} style={{ position: 'relative' }}>
-                        <MoreVertIcon />
-                        {contextMenuVisible && (
-                            <ContextMenu>
-                                <ListItem button onClick={() => auth.signOut()}>
-                                    <ListItemIcon>
-                                        <ExitToAppIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary='Logout' />
-                                </ListItem>
-                                <ListItem button>
-                                    <ListItemIcon>
-                                        <AccountCircleIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary='My Profile' />
-                                </ListItem>
-                            </ContextMenu>
-                        )}
-                    </IconButton>
-                </IconsContainer>
-            </Header>
-            <Divider />
-            <Search>
-                <SearchIcon style={{ color: 'rgba(0, 0, 0, 0.54)' }} />
-                <SearchInput placeholder='Search in chats' />
-            </Search>
-            <Divider />
-            {startChatInputVisible ? (
-                <StartChat setStartChatInputVisible={setStartChatInputVisible} createChat={createChat} />
-            ) : (
-                <SidebarButton fullWidth onClick={() => setStartChatInputVisible(true)}>
-                    Start a new chat
-                </SidebarButton>
+        <>
+            {contextMenuVisible && (
+                <ContextMenu>
+                    <ListItem button onClick={() => auth.signOut()}>
+                        <ListItemIcon>
+                            <ExitToAppIcon />
+                        </ListItemIcon>
+                        <ListItemText primary='Logout' />
+                    </ListItem>
+                    <ListItem button>
+                        <ListItemIcon>
+                            <AccountCircleIcon />
+                        </ListItemIcon>
+                        <ListItemText primary='My Profile' />
+                    </ListItem>
+                </ContextMenu>
             )}
-            <Divider />
-            {/* List of chats */}
-            {chatsSnapshot?.docs.map((chat) => (
-                <ChatListItem key={chat.id} id={chat.id} users={chat.data().users} />
-            ))}
-        </Container>
+            <Container>
+                <Header>
+                    <UserAvatar src={auth.currentUser.photoURL} />
+                    <IconsContainer>
+                        <IconButton>
+                            <ChatIcon />
+                        </IconButton>
+                        <IconButton
+                            onClick={() => setContextMenuVisible((prev) => !prev)}
+                            style={{ position: 'relative' }}
+                        >
+                            <MoreVertIcon />
+                        </IconButton>
+                    </IconsContainer>
+                </Header>
+                <Divider />
+                <Search>
+                    <SearchIcon style={{ color: 'rgba(0, 0, 0, 0.54)' }} />
+                    <SearchInput placeholder='Search in chats' />
+                </Search>
+                <Divider />
+                {startChatInputVisible ? (
+                    <StartChat setStartChatInputVisible={setStartChatInputVisible} createChat={createChat} />
+                ) : (
+                    <SidebarButton fullWidth onClick={() => setStartChatInputVisible(true)}>
+                        Start a new chat
+                    </SidebarButton>
+                )}
+                <Divider />
+                {/* List of chats */}
+                {chatsSnapshot?.docs.map((chat) => (
+                    <ChatListItem key={chat.id} id={chat.id} users={chat.data().users} />
+                ))}
+            </Container>
+        </>
     );
 };
 
 export default Sidebar;
 
 const Container = styled.div`
+    height: 100vh;
     width: 300px;
+    overflow-y: scroll;
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    --ms-overflow-style: none;
+    scrollbar-width: none;
     border-right: 1px solid rgba(0, 0, 0, 0.12);
 `;
 
@@ -115,9 +128,9 @@ const IconsContainer = styled.div``;
 const ContextMenu = styled(List)`
     &&& {
         position: absolute;
-        z-index: 999;
-        left: 64px;
-        top: -16px;
+        z-index: 1000;
+        left: 300px;
+        top: 0px;
         background-color: whitesmoke;
         min-width: 180px;
     }

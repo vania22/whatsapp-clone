@@ -1,19 +1,20 @@
 import styled from 'styled-components';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import Head from 'next/head';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { auth, db } from '../../firebase';
-import Sidebar from '../../components/Sidebar';
-import Chat from '../../components/Chat';
 import { getRecipientEmail } from '../../utils/getRecipientEmail';
 
+import Sidebar from '../../components/Sidebar';
+import Chat from '../../components/Chat';
+
 const ChatPage = ({ chat, messages }) => {
-    const [user] = useAuthState(auth);
+    const [loggedInUser] = useAuthState(auth);
 
     return (
         <Container>
             <Head>
-                <title>Chat with {getRecipientEmail(chat.users, user)}</title>
+                <title>Chat with {getRecipientEmail(chat.users, loggedInUser)}</title>
             </Head>
             <Sidebar />
             <ChatContainer>
