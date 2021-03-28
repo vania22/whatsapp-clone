@@ -1,7 +1,7 @@
+import styled from 'styled-components';
 import { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
-import styled from 'styled-components';
 import { Avatar, IconButton, Button, List, ListItem, ListItemIcon, ListItemText, Divider } from '@material-ui/core';
 import ChatIcon from '@material-ui/icons/Chat';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -21,16 +21,25 @@ const Sidebar = () => {
     const userChatRef = db.collection('chats').where('users', 'array-contains', user?.email);
     const [chatsSnapshot] = useCollection(userChatRef);
 
-    const createChat = (value) => {
-        if (chatAlreadyExists(value)) return;
+    const chatAlreadyExists = (recipientEmail) =>
+        !!chatsSnapshot?.docs.find((chat) => chat.data().users.find((user) => user === recipientEmail)?.length > 0);
+
+    const createChat = async (value, cb) => {
+        // Check if user is existing in DB
+        const recipient = await db.collection('users').where('email', '==', value).get().docs?.length;
+
+        if (!recipient) {
+        }
+
+        if (chatAlreadyExists(value)) {
+            cb('You already have a chat with this person');
+            return;
+        }
 
         db.collection('chats').add({
             users: [user.email, value],
         });
     };
-
-    const chatAlreadyExists = (recipientEmail) =>
-        !!chatsSnapshot?.docs.find((chat) => chat.data().users.find((user) => user === recipientEmail)?.length > 0);
 
     return (
         <>

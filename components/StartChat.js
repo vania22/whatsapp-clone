@@ -6,7 +6,7 @@ import { auth } from '../firebase';
 
 const StartChatInput = ({ setStartChatInputVisible, createChat }) => {
     const ref = useRef(null);
-    const [error, setError] = useState(false);
+    const [error, setError] = useState('');
     const [value, setValue] = useState('');
 
     // onClick event listener to remove StartChatInput component on outter click
@@ -25,11 +25,12 @@ const StartChatInput = ({ setStartChatInputVisible, createChat }) => {
     }, []);
 
     const onClick = () => {
-        if (!value.trim()) return setError(true);
-        if (!EmailValidator.validate(value)) return setError(true);
-        if (value.trim() === auth.currentUser.email) return setError(true);
-        createChat(value);
-        setStartChatInputVisible(false);
+        if (!value.trim()) return setError('Make sure you entered correct email address');
+        if (!EmailValidator.validate(value)) return setError('Make sure you entered correct email address');
+        if (value.trim() === auth.currentUser.email) return setError('Make sure you entered correct email address');
+        createChat(value, (err) => {
+            err ? setError(err) : setStartChatInputVisible(false);
+        });
     };
 
     return (
@@ -41,7 +42,7 @@ const StartChatInput = ({ setStartChatInputVisible, createChat }) => {
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 error={error}
-                helperText={error ? 'Make sure you entered correct email address' : ''}
+                helperText={error || ''}
             />
             <StartButton fullWidth onClick={onClick}>
                 Start

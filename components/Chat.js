@@ -34,12 +34,6 @@ const Chat = ({ chat, messages }) => {
         db.collection('chats').doc(router.query.id).collection('messages').orderBy('timestamp', 'asc'),
     );
 
-    const scrollToBottom = () => {
-        if (lastMessageRef.current) {
-            lastMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    };
-
     const sendMessage = () => {
         db.collection('users').doc(loggedInUser.uid).set(
             {
@@ -56,7 +50,9 @@ const Chat = ({ chat, messages }) => {
         });
 
         setValue('');
-        scrollToBottom();
+
+        // Scroll to the just created message
+        lastMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
     const RecipientLastSeen = () => {
